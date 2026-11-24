@@ -66,7 +66,7 @@ body{
 #poem.on{display:flex}
 #words{max-width:780px;font-family:var(--display);font-weight:700;font-size:clamp(1.45rem,5.6vw,2.7rem);line-height:1.38;letter-spacing:.04em;
   text-shadow:0 0 3px rgba(14,34,54,.9),0 2px 16px rgba(0,0,0,.6)}
-.w{display:inline-block;margin:0 .2em;opacity:0;animation:drop 1.3s cubic-bezier(.3,1.35,.5,1) forwards}
+.w{display:inline-block;margin:0 .2em;opacity:0;animation:drop .8s cubic-bezier(.3,1.35,.5,1) forwards}
 .w.name{color:var(--blush);font-size:1.35em}
 @keyframes drop{
   0%{opacity:0;transform:translateY(-105vh) rotate(-10deg)}
@@ -84,8 +84,8 @@ body{
 #heart path{fill:rgba(255,92,134,0);stroke:var(--rose);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;
   stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 8px rgba(255,92,134,.7))}
 #heart text{font-family:var(--hand);font-weight:700;font-size:46px;fill:var(--ink);text-anchor:middle;opacity:0}
-#heart.go path{animation:draw 3.6s ease-in-out forwards,fillin 1.6s ease 3.4s forwards,thump 1.5s ease-in-out 5.2s infinite}
-#heart.go text{animation:appear 1.2s ease 3.4s forwards}
+#heart.go path{animation:draw 2.2s ease-in-out forwards,fillin 1s ease 2.1s forwards,thump 1.5s ease-in-out 3.2s infinite}
+#heart.go text{animation:appear .8s ease 2.1s forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes fillin{to{fill:rgba(255,92,134,.28)}}
 @keyframes appear{to{opacity:1}}
@@ -234,7 +234,7 @@ body{
   // Palavras a cair
   var TEXT=[['MARIA','name'],['O',''],['ADRIAN','name'],['TE',''],['AMA',''],['MAIS',''],['DO',''],['QUE',''],['QUALQUER',''],['OUTRA',''],['COISA',''],['NESTA',''],['TERRA',''],['E',''],['ELE',''],['SÓ',''],['É',''],['CAPAZ',''],['DE',''],['VER',''],['E',''],['SENTIR',''],['O',''],['PRESENTE',''],['QUANDO',''],['ESTÁ',''],['AO',''],['TEU',''],['LADO,','']];
   var PD=['PD:','O','TEU','PRIMEIRO','AMOR'];
-  var STEP=.3,START=1.4;
+  var STEP=.14,START=.5;
   function addWords(box,list,t0,cls){
     var t=t0;
     list.forEach(function(w){
@@ -258,7 +258,7 @@ body{
     startFlowers();
     started=true;
     var t=addWords($('#words'),TEXT,START);
-    t=addWords($('#pd'),PD,t+.5);
+    t=addWords($('#pd'),PD,t+.2);
     var lastWord=$('#pd').querySelector('.w:last-of-type');
     lastWord.addEventListener('animationend',function(){
       setTimeout(function(){
@@ -268,9 +268,9 @@ body{
         requestAnimationFrame(applySpeed);
         heart.querySelector('path').addEventListener('animationend',function(e){
           if(e.animationName!=='draw')return;
-          setTimeout(function(){$('#galLink').classList.add('on')},1600/spd);
+          setTimeout(function(){$('#galLink').classList.add('on')},700/spd);
         });
-      },1200/spd);
+      },500/spd);
     });
   },{once:true});
 })();
