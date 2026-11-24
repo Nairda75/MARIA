@@ -146,16 +146,8 @@ body{
   addEventListener('resize',function(){if(document.body.contains(intro))buildArrows()});
 
   // 5 segundos de ecrã branco
-  // Um toque, clique ou tecla em qualquer sítio salta a espera
-  var shown=false,waitTimer=null;
-  function reveal(){
-    if(shown)return;shown=true;clearTimeout(waitTimer);
-    arrows.classList.add('on');btn.classList.add('on');
-    ['pointerdown','keydown'].forEach(function(ev){removeEventListener(ev,skip,true)});
-  }
-  function skip(e){if(!shown){e.preventDefault();e.stopPropagation();reveal()}}
-  waitTimer=setTimeout(reveal,5000);
-  ['pointerdown','keydown'].forEach(function(ev){addEventListener(ev,skip,true)});
+  // 5 segundos de ecrã branco
+  setTimeout(function(){arrows.classList.add('on');btn.classList.add('on')},5000);
 
   // Som ao clicar: pequeno carrilhão
   function chime(){
@@ -173,6 +165,22 @@ body{
       setTimeout(function(){try{ac.close()}catch(e){}},3500);
     }catch(e){}
   }
+
+  // Velocidade: cada toque ou clique depois de começar acelera a queda (x2, até x8)
+  var spd=1,started=false;
+  function applySpeed(){
+    document.getAnimations().forEach(function(an){
+      var t=an.effect&&an.effect.target;
+      if(!t||!t.closest||!t.closest('#poem'))return;
+      var it=an.effect.getComputedTiming().iterations;
+      if(it===Infinity)return;
+      an.updatePlaybackRate(spd);
+    });
+  }
+  addEventListener('pointerdown',function(){
+    if(!started)return;
+    spd=Math.min(spd*2,8);applySpeed();
+  },true);
 
   // Girassóis
   var cv=$('#flowers'),ctx=cv.getContext('2d'),W=0,H=0,parts=[],running=false,last=0;
@@ -206,7 +214,7 @@ body{
   }
   function frame(t){
     if(!running)return;
-    var dt=Math.min((t-last)/1000,.05);last=t;
+    var dt=Math.min((t-last)/1000,.05)*spd;last=t;
     ctx.clearRect(0,0,W,H);
     for(var i=0;i<parts.length;i++){
       var p=parts[i];p.y+=p.vy*dt;p.r+=p.vr*dt;
@@ -247,14 +255,22 @@ body{
     $('#poem').classList.add('on');
     setTimeout(function(){intro.remove()},1000);
     startFlowers();
+    started=true;
     var t=addWords($('#words'),TEXT,START);
     t=addWords($('#pd'),PD,t+.5);
-    setTimeout(function(){
-      var wrap=$('#heartWrap');wrap.classList.add('show');
-      wrap.scrollIntoView({behavior:'smooth',block:'center'});
-      $('#heart').classList.add('go');
-      setTimeout(function(){$('#galLink').classList.add('on')},5200);
-    },(t+1.6)*1000);
+    var lastWord=$('#pd').querySelector('.w:last-of-type');
+    lastWord.addEventListener('animationend',function(){
+      setTimeout(function(){
+        var wrap=$('#heartWrap');wrap.classList.add('show');
+        wrap.scrollIntoView({behavior:'smooth',block:'center'});
+        var heart=$('#heart');heart.classList.add('go');
+        requestAnimationFrame(applySpeed);
+        heart.querySelector('path').addEventListener('animationend',function(e){
+          if(e.animationName!=='draw')return;
+          setTimeout(function(){$('#galLink').classList.add('on')},1600/spd);
+        });
+      },1200/spd);
+    });
   },{once:true});
 })();
 </script>
