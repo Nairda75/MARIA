@@ -52,8 +52,8 @@ body{
   0%,100%{transform:rotate(var(--a)) translateX(var(--r)) rotate(180deg)}
   50%{transform:rotate(var(--a)) translateX(calc(var(--r) - 12px)) rotate(180deg)}
 }
-#btn{pointer-events:none;position:relative;z-index:2;width:200px;padding:22px 0;border:0;border-radius:999px;cursor:pointer;
-  background:var(--sun);color:var(--brown);font-family:var(--ui);font-weight:800;font-size:1.7rem;letter-spacing:.14em;
+#btn{pointer-events:none;position:relative;z-index:2;width:min(232px,58vw);padding:22px 0;border:0;border-radius:999px;cursor:pointer;
+  background:var(--sun);color:var(--brown);font-family:var(--ui);font-weight:800;font-size:min(1.4rem,5.4vw);letter-spacing:.1em;white-space:nowrap;
   box-shadow:0 10px 30px rgba(217,130,0,.45);opacity:0;transform:scale(.6);
   transition:opacity .9s ease,transform .9s cubic-bezier(.3,1.5,.5,1)}
 #btn.on{pointer-events:auto;opacity:1;transform:scale(1);animation:beat 1.4s ease-in-out 1s infinite}
@@ -108,7 +108,7 @@ body{
 
 <div id="intro">
   <div id="arrows"></div>
-  <button id="btn" type="button">AMOTE</button>
+  <button id="btn" type="button">JE T’AIME</button>
 </div>
 
 <main id="poem">
@@ -143,11 +143,12 @@ body{
     arrows.innerHTML=html;
   }
   buildArrows();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(buildArrows);
   addEventListener('resize',function(){if(document.body.contains(intro))buildArrows()});
 
   // 5 segundos de ecrã branco
-  // 5 segundos de ecrã branco
-  setTimeout(function(){arrows.classList.add('on');btn.classList.add('on')},5000);
+  // Sem tempo de espera: o botão e as setas aparecem logo
+  requestAnimationFrame(function(){requestAnimationFrame(function(){arrows.classList.add('on');btn.classList.add('on')})});
 
   // Som ao clicar: pequeno carrilhão
   function chime(){
