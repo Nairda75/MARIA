@@ -91,6 +91,11 @@ body{
 @keyframes appear{to{opacity:1}}
 @keyframes thump{0%,100%{transform:scale(1)}12%{transform:scale(1.045)}24%{transform:scale(1)}}
 #heart path{transform-origin:100px 95px}
+#galLink{margin-top:2.2rem;display:inline-block;padding:16px 30px;border-radius:999px;background:var(--sun);color:var(--brown);text-decoration:none;
+  font-family:var(--ui);font-weight:800;font-size:1rem;letter-spacing:.12em;box-shadow:0 8px 24px rgba(217,130,0,.45);
+  opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity 1s ease,transform 1s ease}
+#galLink.on{opacity:1;pointer-events:auto;transform:none}
+#galLink:focus-visible{outline:4px solid var(--blush);outline-offset:4px}
 
 @media (prefers-reduced-motion:reduce){
   .arrow{animation:none}
@@ -115,6 +120,7 @@ body{
       <text x="100" y="98">M + A</text>
     </svg>
   </div>
+  <a id="galLink" href="gallery.html">VER AS NOSSAS FOTOS</a>
 </main>
 
 <script>
@@ -141,6 +147,23 @@ body{
 
   // 5 segundos de ecrã branco
   setTimeout(function(){arrows.classList.add('on');btn.classList.add('on')},5000);
+
+  // Som ao clicar: pequeno carrilhão
+  function chime(){
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+      var ac=new AC(),out=ac.createGain();out.gain.value=.9;out.connect(ac.destination);
+      [523.25,659.25,783.99,1046.5,1318.5].forEach(function(f,i){
+        var o=ac.createOscillator(),h=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+i*.13;
+        o.type='sine';o.frequency.value=f;h.type='sine';h.frequency.value=f*2;
+        g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.02);g.gain.exponentialRampToValueAtTime(.0008,t+1.8);
+        var hg=ac.createGain();hg.gain.value=.25;
+        o.connect(g);h.connect(hg);hg.connect(g);g.connect(out);
+        o.start(t);h.start(t);o.stop(t+1.9);h.stop(t+1.9);
+      });
+      setTimeout(function(){try{ac.close()}catch(e){}},3500);
+    }catch(e){}
+  }
 
   // Girassóis
   var cv=$('#flowers'),ctx=cv.getContext('2d'),W=0,H=0,parts=[],running=false,last=0;
@@ -209,6 +232,7 @@ body{
   }
 
   btn.addEventListener('click',function(){
+    chime();
     intro.classList.add('out');
     $('#sky').classList.add('on');
     $('#poem').classList.add('on');
@@ -220,6 +244,7 @@ body{
       var wrap=$('#heartWrap');wrap.classList.add('show');
       wrap.scrollIntoView({behavior:'smooth',block:'center'});
       $('#heart').classList.add('go');
+      setTimeout(function(){$('#galLink').classList.add('on')},5200);
     },(t+1.6)*1000);
   },{once:true});
 })();
