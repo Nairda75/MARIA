@@ -167,7 +167,7 @@ body{
     }catch(e){}
   }
 
-  // Velocidade: cada toque ou clique depois de começar acelera a queda (x2, até x8)
+  // Velocidade: cada toque ou clique depois de começar acelera a queda (x2,5 por toque, até x30)
   var spd=1,started=false;
   function applySpeed(){
     document.getAnimations().forEach(function(an){
@@ -180,7 +180,7 @@ body{
   }
   addEventListener('pointerdown',function(){
     if(!started)return;
-    spd=Math.min(spd*2,8);applySpeed();
+    spd=Math.min(spd*2.5,30);applySpeed();
   },true);
 
   // Girassóis
@@ -215,7 +215,7 @@ body{
   }
   function frame(t){
     if(!running)return;
-    var dt=Math.min((t-last)/1000,.05)*spd;last=t;
+    var dt=Math.min((t-last)/1000,.05)*Math.min(spd,4);last=t;
     ctx.clearRect(0,0,W,H);
     for(var i=0;i<parts.length;i++){
       var p=parts[i];p.y+=p.vy*dt;p.r+=p.vr*dt;
