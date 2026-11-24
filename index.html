@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>html,body{margin:0}</style>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Para a Maria</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Caveat:wght@600;700&family=Montserrat:wght@800&display=swap">
+<style>
+/* Layout: ecrã branco, depois um botão rodeado de setas; ao clicar, noite com girassóis a cair, palavras a cair e um coração desenhado no fim. */
+:root{
+  --white:#ffffff;
+  --sun:#f7b500;
+  --sun-deep:#d98200;
+  --ink:#fff6dc;
+  --night-top:#0e2236;
+  --night-mid:#1c3b5a;
+  --night-low:#3b2d57;
+  --rose:#ff5c86;
+  --blush:#ffc2d4;
+  --brown:#33190a;
+  --display:"Cormorant Garamond",Georgia,serif;
+  --hand:"Caveat","Segoe Script",cursive;
+  --ui:"Montserrat",system-ui,sans-serif;
+}
+html,body{height:100%}
+body{
+  margin:0;background:var(--white);color:var(--ink);overflow-x:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  box-sizing:border-box;
+}
+#sky{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity 1.6s ease;
+  background:linear-gradient(180deg,var(--night-top),var(--night-mid) 55%,var(--night-low))}
+#sky.on{opacity:1}
+#flowers{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+
+/* Introdução */
+#intro{position:fixed;inset:0;z-index:5;background:var(--white);display:flex;align-items:center;justify-content:center;overflow:hidden;
+  transition:opacity .9s ease}
+#intro.out{opacity:0;pointer-events:none}
+#arrows{position:absolute;left:50%;top:50%;width:0;height:0;opacity:0;transition:opacity 1.2s ease}
+#arrows.on{opacity:1}
+.arrow{position:absolute;left:0;top:0;width:24px;height:24px;margin:-12px 0 0 -12px;color:var(--sun-deep);
+  transform:rotate(var(--a)) translateX(var(--r)) rotate(180deg);
+  animation:nudge 1s ease-in-out infinite;animation-delay:var(--d)}
+.arrow svg{width:100%;height:100%;display:block;fill:currentColor}
+@keyframes nudge{
+  0%,100%{transform:rotate(var(--a)) translateX(var(--r)) rotate(180deg)}
+  50%{transform:rotate(var(--a)) translateX(calc(var(--r) - 12px)) rotate(180deg)}
+}
+#btn{position:relative;z-index:2;width:200px;padding:22px 0;border:0;border-radius:999px;cursor:pointer;
+  background:var(--sun);color:var(--brown);font-family:var(--ui);font-weight:800;font-size:1.7rem;letter-spacing:.14em;
+  box-shadow:0 10px 30px rgba(217,130,0,.45);opacity:0;transform:scale(.6);
+  transition:opacity .9s ease,transform .9s cubic-bezier(.3,1.5,.5,1)}
+#btn.on{opacity:1;transform:scale(1);animation:beat 1.4s ease-in-out 1s infinite}
+#btn:focus-visible{outline:4px solid var(--brown);outline-offset:4px}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+/* Poema */
+#poem{position:relative;z-index:2;display:none;min-height:100svh;flex-direction:column;align-items:center;justify-content:center;
+  padding-block:8vh;box-sizing:border-box;text-align:center}
+#poem.on{display:flex}
+#words{max-width:780px;font-family:var(--display);font-weight:700;font-size:clamp(1.45rem,5.6vw,2.7rem);line-height:1.38;letter-spacing:.04em;
+  text-shadow:0 0 3px rgba(14,34,54,.9),0 2px 16px rgba(0,0,0,.6)}
+.w{display:inline-block;margin:0 .2em;opacity:0;animation:drop 1.3s cubic-bezier(.3,1.35,.5,1) forwards}
+.w.name{color:var(--blush);font-size:1.35em}
+@keyframes drop{
+  0%{opacity:0;transform:translateY(-105vh) rotate(-10deg)}
+  12%{opacity:1}
+  100%{opacity:1;transform:translateY(0) rotate(0)}
+}
+#pd{margin-top:2.2rem;font-family:var(--hand);font-weight:700;font-size:clamp(1.7rem,6.5vw,2.8rem);color:var(--blush);letter-spacing:.02em;
+  text-shadow:0 2px 14px rgba(0,0,0,.6)}
+#pd .w{margin:0 .22em}
+
+/* Coração */
+#heartWrap{margin-top:2.6rem;visibility:hidden}
+#heartWrap.show{visibility:visible}
+#heart{width:min(62vw,260px);height:auto;display:block;overflow:visible}
+#heart path{fill:rgba(255,92,134,0);stroke:var(--rose);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 8px rgba(255,92,134,.7))}
+#heart text{font-family:var(--hand);font-weight:700;font-size:46px;fill:var(--ink);text-anchor:middle;opacity:0}
+#heart.go path{animation:draw 3.6s ease-in-out forwards,fillin 1.6s ease 3.4s forwards,thump 1.5s ease-in-out 5.2s infinite}
+#heart.go text{animation:appear 1.2s ease 3.4s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fillin{to{fill:rgba(255,92,134,.28)}}
+@keyframes appear{to{opacity:1}}
+@keyframes thump{0%,100%{transform:scale(1)}12%{transform:scale(1.045)}24%{transform:scale(1)}}
+#heart path{transform-origin:100px 95px}
+
+@media (prefers-reduced-motion:reduce){
+  .arrow{animation:none}
+  #btn.on{animation:none}
+}
+</style>
+
+<div id="sky"></div>
+<canvas id="flowers"></canvas>
+
+<div id="intro">
+  <div id="arrows"></div>
+  <button id="btn" type="button">AMOTE</button>
+</div>
+
+<main id="poem">
+  <div id="words"></div>
+  <div id="pd"></div>
+  <div id="heartWrap">
+    <svg id="heart" viewBox="0 0 200 180" role="img" aria-label="Coração com M mais A">
+      <path pathLength="1" d="M100 165 C 22 112, 4 62, 44 36 C 71 19, 95 33, 100 54 C 105 33, 129 19, 156 36 C 196 62, 178 112, 100 165 Z"/>
+      <text x="100" y="98">M + A</text>
+    </svg>
+  </div>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var intro=$('#intro'),btn=$('#btn'),arrows=$('#arrows');
+
+  // Setas: 100 setas em espiral, todas a apontar para o botão
+  var ARROW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5h12.2l-4.6-4.6L12 4.5l7.5 7.5L12 19.5l-1.4-1.4 4.6-4.6H3z"/></svg>';
+  function buildArrows(){
+    var rmax=Math.min(innerWidth,innerHeight)/2-20;
+    var r0=Math.min(btn.offsetWidth/2+16,rmax-40);
+    var html='';
+    for(var i=0;i<100;i++){
+      var a=(i*137.508)%360;
+      var r=Math.sqrt(r0*r0+(i+.5)/100*(rmax*rmax-r0*r0));
+      var d=-((i%10)/10).toFixed(2);
+      html+='<span class="arrow" style="--a:'+a.toFixed(1)+'deg;--r:'+r.toFixed(1)+'px;--d:'+d+'s">'+ARROW+'</span>';
+    }
+    arrows.innerHTML=html;
+  }
+  buildArrows();
+  addEventListener('resize',function(){if(document.body.contains(intro))buildArrows()});
+
+  // 5 segundos de ecrã branco
+  setTimeout(function(){arrows.classList.add('on');btn.classList.add('on')},5000);
+
+  // Girassóis
+  var cv=$('#flowers'),ctx=cv.getContext('2d'),W=0,H=0,parts=[],running=false,last=0;
+  function size(){var d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
+  size();addEventListener('resize',size);
+  function sprite(){
+    var s=128,c=document.createElement('canvas');c.width=c.height=s;var g=c.getContext('2d');g.translate(s/2,s/2);
+    for(var layer=0;layer<2;layer++){
+      var n=14;
+      for(var i=0;i<n;i++){
+        g.save();g.rotate(i/n*Math.PI*2+layer*Math.PI/n);g.beginPath();g.ellipse(0,-40,10-layer,24,0,0,Math.PI*2);
+        var gr=g.createLinearGradient(0,-64,0,-16);
+        gr.addColorStop(0,layer?'#ffd84a':'#f6b100');gr.addColorStop(1,layer?'#f2a900':'#d98200');
+        g.fillStyle=gr;g.fill();g.restore();
+      }
+    }
+    var cg=g.createRadialGradient(0,0,2,0,0,22);cg.addColorStop(0,'#6b3f14');cg.addColorStop(1,'#33190a');
+    g.fillStyle=cg;g.beginPath();g.arc(0,0,22,0,Math.PI*2);g.fill();
+    for(var k=0;k<60;k++){
+      var a=k*2.39996,r=2.4*Math.sqrt(k);
+      g.fillStyle='rgba(224,170,90,.55)';g.beginPath();g.arc(Math.cos(a)*r,Math.sin(a)*r,1.1,0,Math.PI*2);g.fill();
+    }
+    return c;
+  }
+  var spr=sprite();
+  function spawn(p,initial){
+    p.s=26+Math.random()*46;p.x0=Math.random()*W;
+    p.y=initial?-Math.random()*H*1.3-p.s:-p.s;
+    p.vy=45+Math.random()*65;p.sw=18+Math.random()*30;p.ph=Math.random()*6.28;p.sf=.6+Math.random()*.8;
+    p.r=Math.random()*6.28;p.vr=(Math.random()-.5)*1.4;
+  }
+  function frame(t){
+    if(!running)return;
+    var dt=Math.min((t-last)/1000,.05);last=t;
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<parts.length;i++){
+      var p=parts[i];p.y+=p.vy*dt;p.r+=p.vr*dt;
+      var x=p.x0+Math.sin(p.ph+t/1000*p.sf)*p.sw;
+      ctx.save();ctx.translate(x,p.y);ctx.rotate(p.r);ctx.globalAlpha=.96;ctx.drawImage(spr,-p.s/2,-p.s/2,p.s,p.s);ctx.restore();
+      if(p.y>H+p.s)spawn(p,false);
+    }
+    requestAnimationFrame(frame);
+  }
+  function startFlowers(){
+    var n=W<600?26:46;
+    for(var i=0;i<n;i++){var p={};spawn(p,true);parts.push(p)}
+    running=true;last=performance.now();requestAnimationFrame(frame);
+  }
+
+  // Palavras a cair
+  var TEXT=[['MARIA','name'],['O',''],['ADRIAN','name'],['TE',''],['AMA',''],['MAIS',''],['DO',''],['QUE',''],['QUALQUER',''],['OUTRA',''],['COISA',''],['NESTA',''],['TERRA',''],['E',''],['ELE',''],['SÓ',''],['É',''],['CAPAZ',''],['DE',''],['VER',''],['E',''],['SENTIR',''],['O',''],['PRESENTE',''],['QUANDO',''],['ESTÁ',''],['AO',''],['TEU',''],['LADO,','']];
+  var PD=['PD:','O','TEU','PRIMEIRO','AMOR'];
+  var STEP=.3,START=1.4;
+  function addWords(box,list,t0,cls){
+    var t=t0;
+    list.forEach(function(w){
+      var item=typeof w==='string'?[w,'']:w;
+      var s=document.createElement('span');
+      s.className='w'+(item[1]?' '+item[1]:'');
+      s.textContent=item[0];
+      s.style.animationDelay=t.toFixed(2)+'s';
+      box.appendChild(s);box.appendChild(document.createTextNode(' '));
+      t+=STEP;
+    });
+    return t;
+  }
+
+  btn.addEventListener('click',function(){
+    intro.classList.add('out');
+    $('#sky').classList.add('on');
+    $('#poem').classList.add('on');
+    setTimeout(function(){intro.remove()},1000);
+    startFlowers();
+    var t=addWords($('#words'),TEXT,START);
+    t=addWords($('#pd'),PD,t+.5);
+    setTimeout(function(){
+      var wrap=$('#heartWrap');wrap.classList.add('show');
+      wrap.scrollIntoView({behavior:'smooth',block:'center'});
+      $('#heart').classList.add('go');
+    },(t+1.6)*1000);
+  },{once:true});
+})();
+</script>
+
+</body>
+</html>
